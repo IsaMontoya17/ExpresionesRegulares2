@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -28,6 +29,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 	private JTextField textNombres;
 	private JComboBox<String> comboBoxTipoID;
 	private JComboBox<String> comboBoxLugarResidencia;
+	private JComboBox<String> comboBoxNacionalidad;
 	private JTextField textNumeroID;
 	private JTextField textCorreoElectronico;
 	private JTextField textConfirmacionCorreo;
@@ -35,10 +37,13 @@ public class PanelRegistro extends JPanel implements ActionListener {
 	private JPanel panelC;
 	private JPasswordField passwordFieldContraseña;
 	private JPasswordField passwordField_1ConfirmarContraseña;
+	private JButton btnRegistrar;
+	public ArrayList<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
 
-	public PanelRegistro(JPanel panelC) {
+	public PanelRegistro(JPanel panelC, ArrayList<Usuario> usuarios) {
 
 		this.panelC = panelC;
+		listaDeUsuarios = usuarios;
 
 		setBackground(new Color(255, 234, 244));
 		setLayout(new BorderLayout(0, 0));
@@ -123,7 +128,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 		lblNacionalidad.setFont(new Font("Nirmala UI", Font.PLAIN, 11));
 		panelCentro.add(lblNacionalidad);
 
-		JComboBox comboBoxNacionalidad = new JComboBox();
+		comboBoxNacionalidad = new JComboBox();
 		comboBoxNacionalidad.setFont(new Font("Nirmala UI", Font.PLAIN, 11));
 		comboBoxNacionalidad.setModel(new DefaultComboBoxModel(new String[] { "Colombiano(a)", "otro" }));
 		panelCentro.add(comboBoxNacionalidad);
@@ -150,8 +155,6 @@ public class PanelRegistro extends JPanel implements ActionListener {
 		lblContraseña.setFont(new Font("Nirmala UI", Font.PLAIN, 11));
 		panelCentro.add(lblContraseña);
 
-		String[] opcionesSeguimiento = { "1. Actividad física", "2. Alimentación", "3. Sueño" };
-
 		passwordFieldContraseña = new JPasswordField();
 		passwordFieldContraseña.setFont(new Font("Nirmala UI", Font.PLAIN, 11));
 		panelCentro.add(passwordFieldContraseña);
@@ -167,7 +170,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 		JLabel lblNewLabel_4 = new JLabel();
 		panelCentro.add(lblNewLabel_4);
 
-		JButton btnRegistrar = new JButton("Registrar");
+		btnRegistrar = new JButton("Registrar");
 		btnRegistrar.setBackground(new Color(255, 128, 191));
 		btnRegistrar.setFont(new Font("Nirmala UI", Font.BOLD, 11));
 		Color backgroundColor = btnRegistrar.getBackground();
@@ -194,11 +197,10 @@ public class PanelRegistro extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		if (e.getActionCommand().equals("Registrar")) {
+		if (e.getSource() == btnRegistrar) {
 			if (validarCampos()) {
 				Usuario usuario = capturaDatos();
-				LUsuario lUsuario = new LUsuario();
-				lUsuario.registrarUsuario(usuario);
+				listaDeUsuarios.add(usuario);
 				panelC.remove(this);
 				panelC.revalidate();
 				panelC.repaint();
@@ -208,22 +210,91 @@ public class PanelRegistro extends JPanel implements ActionListener {
 	}// CIERRE DEL METODO
 
 	private boolean validarCampos() {
+		String mensajesError = "";
 
 		String apellidos = textApellidos.getText();
 		String nombres = textNombres.getText();
 		String id = textNumeroID.getText();
+		String tipoId = comboBoxTipoID.getSelectedItem().toString();
+		String lugarResidencia = comboBoxLugarResidencia.getSelectedItem().toString();
+		String nacionalidad = comboBoxNacionalidad.getSelectedItem().toString();
 		String numeroCel = textNumeroCel.getText();
 		String correo = textCorreoElectronico.getText();
 		String confirmacionCorreo = textConfirmacionCorreo.getText();
+		String contraseña = passwordFieldContraseña.getText();
+		String confirmacionContraseña = passwordField_1ConfirmarContraseña.getText();
 
-		if (!numeroCel.matches("[0-9]+")) {
-			JOptionPane.showMessageDialog(this, "El número de celular debe ser un número entero.", "Error",
-					JOptionPane.ERROR_MESSAGE);
+		// Validar nombres
+		if (nombres.length() < 2 || !nombres.matches("[a-zA-Z]+")) {
+			mensajesError += "- El nombre no es válido. Debe tener al menos 2 letras y no debe contener números ni caracteres especiales.\n";
+		}
+
+		// Validar apellidos
+		String patronApellidos = "^[a-zA-Z]+( [a-zA-Z]+)?$";
+		if (!apellidos.matches(patronApellidos)) {
+			mensajesError += "- Los apellidos no son válidos. Deben tener al menos 2 letras y no deben contener números ni caracteres especiales, excepto un espacio entre dos palabras.\n";
+		}
+		// Verificar que haya dos apellidos
+		String[] apellidosSeparados = apellidos.split("\\s+"); // Dividir por espacios en blanco
+		if (apellidosSeparados.length != 2) {
+			mensajesError += "- Deben ingresarse dos apellidos separados por un espacio.\n";
+		}
+
+		// Validar ID
+		if (!id.matches("\\d{6,10}")) {
+			mensajesError += "- El ID no es válido. Debe contener entre 6 y 10 dígitos y solo números.\n";
+		}
+
+		// Validar número de celular
+		if (!numeroCel.matches("\\d{10}")) {
+			mensajesError += "- El número de celular debe contener al menos 10 dígitos.\n";
+		}
+
+		// Validar correo
+		String patronCorreo = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+		if (!correo.matches(patronCorreo)) {
+			mensajesError += "- La dirección de correo electrónico no es válida.\n";
+		}
+
+		// Validar confirmación de correo
+		if (!correo.equals(confirmacionCorreo)) {
+			mensajesError += "- La confirmación de correo electrónico no coincide con la dirección de correo electrónico.\n";
+		}
+
+		// Validar contraseña
+		if (!contraseña.equals(confirmacionContraseña)) {
+			mensajesError += "- La contraseña y la confirmación de contraseña no coinciden.\n";
+		} else {
+			// Validar longitud de la contraseña
+			if (contraseña.length() < 8) {
+				mensajesError += "- La contraseña debe tener al menos 8 caracteres.\n";
+			}
+			// Validar presencia de al menos una letra minúscula
+			if (!contraseña.matches(".*[a-z].*")) {
+				mensajesError += "- La contraseña debe contener al menos una letra minúscula.\n";
+			}
+			// Validar presencia de al menos una letra mayúscula
+			if (!contraseña.matches(".*[A-Z].*")) {
+				mensajesError += "- La contraseña debe contener al menos una letra mayúscula.\n";
+			}
+			// Validar presencia de al menos un número
+			if (!contraseña.matches(".*\\d.*")) {
+				mensajesError += "- La contraseña debe contener al menos un número.\n";
+			}
+		}
+
+		// Validar confirmacion de contraseña
+		if (!contraseña.equals(confirmacionContraseña)) {
+			mensajesError += "- La contraseña y la confirmación de contraseña no coinciden.\n";
+		}
+
+		if (!mensajesError.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Por favor, corrija los siguientes errores:\n" + mensajesError,
+					"Errores", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
 		return true;
-
 	}// CIERRE DEL METODO
 
 	private Usuario capturaDatos() {
@@ -232,11 +303,17 @@ public class PanelRegistro extends JPanel implements ActionListener {
 
 		usuario.setNombres(textNombres.getText());
 		usuario.setApellidos(textApellidos.getText());
-		// tipo id
+		int selectedIndex = comboBoxTipoID.getSelectedIndex();
+		String selectedTipoID = (String) comboBoxTipoID.getSelectedItem();
+		usuario.setTipoID(selectedTipoID);
 		usuario.setId(textNumeroID.getText());
-		// lugar residencia
+		selectedIndex = comboBoxLugarResidencia.getSelectedIndex();
+		String selectedLugarResidencia = (String) comboBoxLugarResidencia.getSelectedItem();
+		usuario.setLugarResidencia(selectedLugarResidencia);
 		usuario.setNumeroCel(textNumeroCel.getText());
-		// nacionalidad
+		selectedIndex = comboBoxNacionalidad.getSelectedIndex();
+		String selectedNacionalidad = (String) comboBoxNacionalidad.getSelectedItem();
+		usuario.setNacionalidad(selectedNacionalidad);
 		usuario.setCorreoElectronico(textCorreoElectronico.getText());
 		usuario.setContraseña(passwordFieldContraseña.getText());
 

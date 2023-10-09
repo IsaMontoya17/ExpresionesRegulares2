@@ -5,8 +5,12 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import bean.Usuario;
+
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.awt.Color;
 
 public class Inicio {
@@ -60,7 +64,9 @@ public class Inicio {
 		panelCentro.setBackground(new Color(255, 234, 244));
 		frame.getContentPane().add(panelCentro, BorderLayout.CENTER);
 		
-		PanelMenuPrincipal panelMenuPrincipal = new PanelMenuPrincipal(panelCentro);
+		ArrayList<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
+		
+		PanelMenuPrincipal panelMenuPrincipal = new PanelMenuPrincipal(panelCentro, listaDeUsuarios);
 		panelMenuPrincipal.setBackground(new Color(255, 234, 244));
 		
 		JPanel panelMenu = new JPanel();

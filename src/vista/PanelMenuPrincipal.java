@@ -3,6 +3,9 @@ package vista;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import bean.Usuario;
+import vista.PanelImpresion;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -10,6 +13,7 @@ import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 
@@ -18,15 +22,16 @@ public class PanelMenuPrincipal extends JPanel implements ActionListener{
 	private JPanel panelCentro;
 	private JButton btnRegresar;
 	private JButton btnRegistro;
-	private JButton btnAlmacenamiento;
 	private JButton btnImpresión;
 	private JButton btnSalir;
+	public ArrayList<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
 	/**
 	 * Create the panel.
 	 */
-	public PanelMenuPrincipal(JPanel panelCentro) {
-		setLayout(new GridLayout(0, 5, 0, 0));
+	public PanelMenuPrincipal(JPanel panelCentro, ArrayList<Usuario> usuarios) {
+		setLayout(new GridLayout(0, 4, 0, 0));
 		this.panelCentro = panelCentro;
+		listaDeUsuarios = usuarios;
 		
 		btnRegresar = new JButton("Regresar");
 		btnRegresar.setFont(new Font("Nirmala UI", Font.BOLD, 11));
@@ -43,13 +48,6 @@ public class PanelMenuPrincipal extends JPanel implements ActionListener{
 		add(btnRegistro);
 		btnRegistro.setBackground(new Color(250, 141, 199));
 		btnRegistro.addActionListener(this);
-		
-		btnAlmacenamiento = new JButton("Almacenamiento");
-		btnAlmacenamiento.setFont(new Font("Nirmala UI", Font.BOLD, 11));
-		btnAlmacenamiento.setBorder(border);
-		add(btnAlmacenamiento);
-		btnAlmacenamiento.setBackground(new Color(250, 141, 199));
-		btnAlmacenamiento.addActionListener(this);
 		
 		btnImpresión = new JButton("Impresión");
 		btnImpresión.setFont(new Font("Nirmala UI", Font.BOLD, 11));
@@ -75,22 +73,21 @@ public class PanelMenuPrincipal extends JPanel implements ActionListener{
 			System.exit(0);
 		}
 		
-		if (e.getSource() == btnAlmacenamiento) {
-			
-			
-			
-		}	
-		
 		if (e.getSource() == btnImpresión) {
 			
-			
+			panelCentro.removeAll();
+			PanelImpresion panelImpresion = new PanelImpresion(panelCentro, listaDeUsuarios);
+			panelCentro.setLayout(new BorderLayout());
+            panelCentro.add(panelImpresion, BorderLayout.CENTER);
+            panelCentro.revalidate();
+            panelCentro.repaint();
 			
 		}		
 		
 		if (e.getSource() == btnRegistro) {
 			
 			panelCentro.removeAll();
-            PanelRegistro panelRegistro = new PanelRegistro(panelCentro);
+            PanelRegistro panelRegistro = new PanelRegistro(panelCentro, listaDeUsuarios);
             panelCentro.setLayout(new BorderLayout());
             panelCentro.add(panelRegistro, BorderLayout.CENTER);
             panelCentro.revalidate();
