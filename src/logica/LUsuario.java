@@ -100,4 +100,22 @@ public class LUsuario {
 		}
 
 	}
+	
+	public static void calcularErroresYPorcentaje(ArrayList<Usuario> listaDeUsuarios) {
+        int totalUsuarios = listaDeUsuarios.size();
+        int usuariosConError = 0;
+
+        for (Usuario usuario : listaDeUsuarios) {
+            if (usuario.isError()) {
+                usuariosConError++;
+            }
+        }
+
+        double porcentajeConError = (usuariosConError / (double) totalUsuarios) * 100;
+
+        String mensaje = "Cantidad de personas con error en true: " + usuariosConError + "\n"
+                + "Porcentaje de personas con error en true: " + porcentajeConError + "%";
+
+        JOptionPane.showMessageDialog(null, mensaje, "Resultados", JOptionPane.INFORMATION_MESSAGE);
+    }
 }

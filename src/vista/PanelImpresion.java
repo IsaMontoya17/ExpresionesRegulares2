@@ -201,7 +201,7 @@ public class PanelImpresion extends JPanel implements ActionListener {
         }
 		if (e.getSource() == btnPorcentaje1) {
 			
-			
+			LUsuario.calcularErroresYPorcentaje(listaDeUsuarios);
 			
         }
 		if (e.getSource() == btnCantidadCE) {

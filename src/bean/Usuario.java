@@ -11,9 +11,10 @@ public class Usuario {
 	private String nacionalidad;
 	private String correoElectronico;
 	private String contraseña;
+	private boolean error;
 	
 	public Usuario(String nombres, String apellidos, String tipoID, String id, String lugarResidencia, String numeroCel,
-			String nacionalidad, String correoElectronico, String contraseña) {
+			String nacionalidad, String correoElectronico, String contraseña, boolean error) {
 		super();
 		this.nombres = nombres;
 		this.apellidos = apellidos;
@@ -24,8 +25,9 @@ public class Usuario {
 		this.nacionalidad = nacionalidad;
 		this.correoElectronico = correoElectronico;
 		this.contraseña = contraseña;
+		this.error = false;
 	}
-	
+
 	public Usuario() {
 	}
 
@@ -99,6 +101,14 @@ public class Usuario {
 
 	public void setContraseña(String contraseña) {
 		this.contraseña = contraseña;
+	}
+
+	public boolean isError() {
+		return error;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
 	}
 	
 }//CIERRE DE LA CLASE

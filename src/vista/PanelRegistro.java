@@ -39,6 +39,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 	private JPasswordField passwordField_1ConfirmarContraseña;
 	private JButton btnRegistrar;
 	public ArrayList<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
+	public Usuario usuario =new Usuario();
 
 	public PanelRegistro(JPanel panelC, ArrayList<Usuario> usuarios) {
 
@@ -199,7 +200,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 
 		if (e.getSource() == btnRegistrar) {
 			if (validarCampos()) {
-				Usuario usuario = capturaDatos();
+				usuario = capturaDatos();
 				listaDeUsuarios.add(usuario);
 				panelC.remove(this);
 				panelC.revalidate();
@@ -259,6 +260,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 		// Validar confirmación de correo
 		if (!correo.equals(confirmacionCorreo)) {
 			mensajesError += "- La confirmación de correo electrónico no coincide con la dirección de correo electrónico.\n";
+			usuario.setError(true);
 		}
 
 		// Validar contraseña
@@ -299,7 +301,7 @@ public class PanelRegistro extends JPanel implements ActionListener {
 
 	private Usuario capturaDatos() {
 
-		Usuario usuario = new Usuario();
+//		Usuario usuario = new Usuario();
 
 		usuario.setNombres(textNombres.getText());
 		usuario.setApellidos(textApellidos.getText());
